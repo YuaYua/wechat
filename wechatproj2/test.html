@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Swiper demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+	<style type="text/css">
+		body,html{
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+		}
+		#myCanvas{
+				box-shadow: 0 0 10px cyan;
+				margin: auto;
+				display: block;
+			}
+	</style>
+</head>
+<body>
+    <canvas id="myCanvas" width="" height=""></canvas>
+
+    
+    <script>
+    var canvas = document.getElementById("myCanvas");
+	var context = canvas.getContext("2d");
+    var windowWidth = document.documentElement.clientWidth;
+	var windowHeight = document.documentElement.clientHeight;
+	canvas.width = windowWidth;
+	canvas.height = windowHeight;
+	var img=new Image();
+	img.src="../wechatProj2_teach/img/index.png";
+	img.onload=function(){
+		context.drawImage(img, 0, 0,canvas.width,img.height/img.width*canvas.width);
+	}
+	
+    </script>
+</body>
+</html>

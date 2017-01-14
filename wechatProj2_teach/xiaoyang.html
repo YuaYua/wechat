@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<title></title>
+		<style type="text/css">
+			body,html{
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 100%;
+			}
+			#myCanvas{
+				box-shadow: 0 0 10px cyan;
+				margin: auto;
+				display: block;
+			}
+			#btn{
+				width: 25%;
+				height: 14.08%;
+				background : url(img/btn.png) 0px 0px / contain;
+				position: absolute;
+				left: 0;
+				top:0
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="myCanvas" width="" height=""></canvas>
+		<div id="btn">
+			
+		</div>
+	</body>
+	<script type="text/javascript">
+		var width = document.documentElement.clientWidth;
+		var height = document.documentElement.clientHeight;
+		var canvas = document.getElementById('myCanvas');
+		var context = canvas.getContext('2d');
+		var deg = Math.PI / 180;
+		var divs = document.getElementById('btn');
+		canvas.width = width;
+		canvas.height = height;
+		//因为设计稿的大小和各种设备大小不等，所以要找到每个元素和设计稿大小的比例
+		var scaleX = canvas.width/640;
+		var scaleY = canvas.height/1136;
+		
+		function loading(imgArr,fn){
+			var length = 0;
+			for(var keys in imgArr){
+				length++;
+			}
+			var num = 0;
+			var imgObj = {};
+			for(var keys in imgArr){
+				var img = new Image();
+				img.src = imgArr[keys];
+				img.onload = (function(key){
+					return function(){
+						num++;
+						imgObj[key] = this;
+						var sum = num/length;
+						if(fn.progress){
+							fn.progress(sum);
+						}
+						if(num>=length){
+							if(fn.complete){
+								fn.complete(imgObj);
+							}
+						}
+					}
+				})(keys)
+			}	
+		}
+		loading({
+			"bg":"img/index.png",
+			"len":"img/len.png",
+			"matong":"img/matong.png",
+			"yun1":"img/云1.png",
+			"yun2":"img/云2.png",
+			"dan1":"img/dan1.png",
+			"qtang":"img/qtang.png"
+		},{
+			complete:main
+		})
+		function main(imgObj){
+			
+			
+			function Li(img,obj){
+				this.img=img;
+				this.w=this.img.width*scaleX;
+				this.h=this.img.height*scaleY;
+				this.x=obj.x+(obj.w-this.w)/2;
+				this.y=obj.y+(obj.h-this.h)/2;
+				this.speed=obj.speed;
+			}
+			
+			Li.prototype.draw=function(){
+				context.drawImage(this.img,this.x,this.y,this.w,this.h);
+			}
+			Li.prototype.move=function(speed){
+				this.speed=speed;
+				this.x+=this.speed;
+				
+			}
+			
+			
+			
+			function Yun(obj){
+				this.img=obj.img;
+				this.x=obj.x;
+				this.y=obj.y;
+				this.w=this.img.width*scaleX;
+				this.h=this.img.height*scaleY;
+				this.speed=obj.speed;
+				this.li=new Li(obj.li,this);
+			}
+			
+			Yun.prototype.draw=function(){
+				context.drawImage(this.img,this.x,this.y,this.img.width*scaleX,this.img.height*scaleY);
+				this.li.draw();
+			}
+			Yun.prototype.move=function(){
+				if(this.x<0||this.x>canvas.width-this.img.width*scaleX){
+					this.speed*=-1;
+				}
+				this.x+=this.speed;
+				this.li.move(this.speed);
+			}
+			
+			
+			
+			function Matong(){
+				this.x=0;
+				this.y=0;
+				this.w=imgObj.matong.width*scaleX;
+				this.h=imgObj.matong.height*scaleY;
+				
+				
+				this.len=canvas.height*0.1496;
+				this.rotatedeg=45;
+				this.rotatespeed=1;
+				this.lenspeed=0;
+				this.dir="right";
+			}
+			
+			Matong.prototype.draw=function(){
+				context.save();
+				context.translate(canvas.width*0.3828,canvas.height*0.2245);
+				context.rotate(this.rotatedeg*deg);
+				context.drawImage(imgObj.len,0,0,imgObj.len.width*scaleX,this.len);
+				context.drawImage(imgObj.matong,0-(imgObj.matong.width*scaleX-imgObj.len.width*scaleX)/2,this.len,imgObj.matong.width*scaleX,imgObj.matong.height*scaleY);
+				
+				context.restore();
+			}
+			
+			Matong.prototype.move=function(){
+				
+				if(this.rotatedeg>=45){
+					this.rotatespeed=-1;
+				}else if(this.rotatedeg<=-45){
+					this.rotatespeed=1;
+				}
+				if(this.len<canvas.height*0.1496){
+					this.len=canvas.height*0.1496;
+					this.lenspeed=0;
+					if(this.dir=="left"){
+						this.rotatespeed=1;
+					}else{
+						this.rotatespeed=-1;
+					}
+				}
+				
+				
+				var x=canvas.width*0.3828-this.len*Math.sin(this.rotatedeg*deg);
+				var y=canvas.height*0.2245+this.len*Math.cos(this.rotatedeg*deg);
+				//(x,y)在原画布上杆底部的位置
+				this.x=x-this.w/2*Math.cos(this.rotatedeg*deg);
+				this.y=y-this.w/2*Math.sin(this.rotatedeg*deg);
+				
+				if(this.x<0||this.x>canvas.width){
+					this.lenspeed=-2;
+				}
+				
+				this.rotatedeg+=this.rotatespeed;
+				this.len+=this.lenspeed;
+			}
+			
+			var matong=new Matong();
+			var yun1=new Yun({
+				x:canvas.width*0.2813,
+				y:canvas.height*0.4781,
+				img:imgObj.yun1,
+				speed:3,
+				li:imgObj.qtang
+			})
+			function ani(){
+				context.clearRect(0,0,canvas.width,canvas.height);
+				context.drawImage(imgObj.bg,0,0,canvas.width,imgObj.bg.height/imgObj.bg.width*canvas.width);
+				matong.draw();
+				matong.move();
+				
+				yun1.draw();
+				yun1.move();
+				
+				window.requestAnimationFrame(ani);
+			}
+			ani();
+			divs.addEventListener("touchstart",function(e){
+				var ev=e||event;
+				if(matong.rotatespeed>0){
+					matong.dir="left";
+				}else{
+					matong.dir="right";
+				}
+				matong.lenspeed=2;
+				matong.rotatespeed=0;
+				ev.preventDefault();
+			},false);
+			divs.addEventListener("touchend",function(){
+				matong.lenspeed=-2;
+			},false);
+		}
+		
+		
+		
+		function peng(obj1,obj2){
+			var x1 = obj1.x;
+			var l1 = obj1.w + x1;
+			var y1 = obj1.y;
+			var h1 = obj1.h + y1;
+			
+			var x2 = obj2.x;
+			var l2 = obj2.w + x2;
+			var y2 = obj2.y;
+			var h2 = obj2.h + y2;
+			if(l1>x2&&x1<l2&&h1>y2&&y1<h2){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		
+		
+	</script>
+</html>

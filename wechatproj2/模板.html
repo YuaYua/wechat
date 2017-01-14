@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<title>小样来挑战</title>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			a {
+				text-decoration: none;
+			}
+			
+			#game {
+				/*border: 1px solid darkblue;*/
+				position: relative;
+				/*overflow: hidden;*/
+			}
+			
+			#wrap {
+				position: absolute;
+				width: 9999px;
+				left: 0;
+				top: 0;
+			}
+			
+			.pos {
+				position: relative;
+			}
+			
+			#startBtn {
+				width: 65%;
+				position: absolute;
+				bottom: 6%;
+				left: 0;
+				right: 0;
+				margin: auto;
+			}
+			
+			.size {
+				float: left;
+			}
+			
+			.pickdiv {
+				width: 100%;
+				text-align: center;
+				position: absolute;
+				top: 64%;
+			}
+			
+			.pickdiv>img {
+				width: 15%;
+				margin-left: 4%;
+				float: left;
+			}
+			
+			#picked {
+				position: absolute;
+				left: 0;
+				right: 0;
+				bottom: 45%;
+				margin: auto;
+				width: 100%;
+				height: 50%;
+				background-image: url(img/peopleBai.png);
+				background-repeat: no-repeat;
+				background-size: 37%;
+				background-position: bottom;
+			}
+			
+			#pickpeople:after {
+				content: ".";
+				display: block;
+				height: 0;
+				visibility: hidden;
+				clear: both;
+			}
+			
+			#pickname {
+				position: absolute;
+				width: 100%;
+				bottom: -50%;
+			}
+			
+			#pickname>span {
+				width: 19%;
+				display: inline-block;
+			}
+			
+			#pickname>span:nth-child(1) {
+				color: red;
+			}
+			
+			#fix {
+				width: 65%;
+				height: 10%;
+				position: absolute;
+				bottom: 6%;
+				left: 0;
+				right: 0;
+				margin: auto;
+				background-image: url(img/pickUp.png);
+				background-repeat: no-repeat;
+				background-size: 100%;
+			}
+			#btn{
+				width: 25%;
+				height: 14.08%;
+				background : url(img/playbtn.png) 0px 0px / contain;
+				position: absolute;
+				left: 0;
+				top:0
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="game">
+			<div id="wrap">
+				<!--开始界面-->
+				<div id="startMenu" class="size pos">
+					<button id="startBtn">
+					</button>
+				</div>
+				<!--选人界面-->
+				<div id="pickplayer" class="size pos">
+					<!--全身-->
+					<div id="picked">
+
+					</div>
+					<!--头像-->
+					<div id="pickpeople" class="pickdiv">
+						<img class="pick" src="img/pickbai.png" alt="" statu="1" />
+						<img class="pick" src="img/han.png" alt="" statu="0" />
+						<img class="pick" src="img/ming.png" alt="" statu="0" />
+						<img class="pick" src="img/liu.png" alt="" statu="0" />
+						<img class="pick" src="img/xu.png" alt="" statu="0" />
+						<div id="pickname">
+							<span statu="1">白客</span>
+							<span statu="0">韩雪</span>
+							<span statu="0">明道</span>
+							<span statu="0">刘语熙</span>
+							<span statu="0">徐开骋</span>
+						</div>
+					</div>
+					<!--选定人物-->
+					<button id="fix">
+						
+					</button>
+				</div>
+				<!--游戏界面-->
+				<div id="playing" class="size pos">
+					<canvas id="myCanvas" width="" height=""></canvas>
+					<div id="btn"></div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+	<script src="js/JQuery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/tween.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var canvas = document.getElementById("myCanvas");
+		var context = canvas.getContext("2d");
+		var deg = Math.PI / 180;
+		
+		function loading(objImg, obj) {
+			var length = 0;
+			for(var keys in objImg) {
+				length++;
+			}
+			var num = 0;
+			var imgObj = {};
+			for(var keys in objImg) {
+				var img = new Image();
+				img.src = objImg[keys];
+				img.onload = (function(keyy) {
+					return function() {
+						num++;
+						imgObj[keyy] = this;
+						var loads = num / length;
+						if(obj.load) {
+							obj.load(loads);
+						}
+						if(num >= length) {
+							if(obj.complete) {
+								obj.complete(imgObj);
+							}
+						}
+					}
+				})(keys)
+			}
+		}
+		//记得注释这一句
+		//img.src="img/pickDown.png"
+
+		loading({
+			"bg": "img/bg.png",
+			"startBtn": "img/startBtn.png",
+			"pickbg": "img/pickBg.png",
+			"pickUp": "img/pickUp.png",
+			"pickDown": "img/pickDown.png",
+			"han": "img/han.png",
+			"liu": "img/liu.png",
+			"ming": "img/ming.png",
+			"xu": "img/xu.png",
+			"bai": "img/bai.png",
+			"pickhan": "img/pickhan.png",
+			"pickliu": "img/pickliu.png",
+			"pickming": "img/pickming.png",
+			"pickxu": "img/pickxu.png",
+			"pickbai": "img/pickbai.png",
+			"peopleBai": "img/peopleBai.png",
+			"peopleHan": "img/peopleHan.png",
+			"peopleliu": "img/peopleliu.png",
+			"peopleMing": "img/peopleMing.png",
+			"peopleXu": "img/peopleXu.png",
+			"pickUp": "img/pickUp.png",
+			"pickDown": "img/pickDown.png",
+			"playbg": "img/what.png",
+			"playbai": "img/playbai.png",
+			"playhan": "img/playhan.png",
+			"playming": "img/playming.png",
+			"playliu": "img/playliu.png",
+			"playxu": "img/playxu.png",
+			"cloud1":"img/cloud1.png",
+			"cloud2":"img/cloud2.png",
+			"cloud3":"img/cloud3.png",
+			"cloud4":"img/cloud4.png",
+			"cloud5":"img/cloud5.png",
+			"cloud6":"img/cloud6.png",
+			"cloud7":"img/cloud7.png",
+			"trr1":"img/trr1.png",
+			"trr2":"img/trr2.png",
+			"trr3":"img/trr3.png",
+			"trr4":"img/trr4.png",
+			"trr5":"img/trr5.png",
+			"trr6":"img/trr6.png",
+			"trr7":"img/trr7.png",
+			"pole":"img/pole.png",
+			"plug":"img/plug.png"
+		}, {
+			complete: main,
+			load: load,
+		})
+
+		function main(imgObj) {
+			//适应手机大小
+			var windowWidth = document.documentElement.clientWidth;
+			var windowHeight = document.documentElement.clientHeight;
+			
+			//wrap的宽n个屏幕大小
+			var wrapHeight = windowWidth * 3;
+			$("#game").width(windowWidth);
+			$("#game").height(windowHeight);
+			$("#wrap").width(wrapHeight);
+			//每个界面同样大小
+			$(".size").width(windowWidth);
+			$(".size").height(windowHeight);
+			//开始界面背景大小
+			imgObj.bg.style.width = windowWidth + "px";
+			imgObj.bg.style.height = windowHeight + "px";
+			imgObj.startBtn.style.width = "100%";
+			$("#startMenu").append(imgObj.bg);
+			$("#startBtn").append(imgObj.startBtn);
+			$("#startBtn").click(function() {
+				//跳到下一界面
+				move();
+			});
+
+			//选人界面
+			imgObj.pickbg.style.width = windowWidth + "px";
+			imgObj.pickbg.style.height = windowHeight + "px";
+			$("#pickplayer").append(imgObj.pickbg);
+			var imgArrW = ["img/bai.png", "img/han.png", "img/ming.png", "img/liu.png", "img/xu.png"];
+			var imgArrR = ["img/pickbai.png", "img/pickhan.png", "img/pickming.png", "img/pickliu.png", "img/pickxu.png"];
+			var imgArrA = ["img/peopleBai.png", "img/peopleHan.png", "img/peopleMing.png", "img/peopleliu.png", "img/peopleXu.png"];
+			var indextoR = 0;
+			var imgs = new Image();
+			var playImg = ["img/playbai.png", "img/playhan.png", "img/playming.png", "img/playliu.png", "img/playxu.png"];
+			imgs.src = playImg[indextoR];
+			$(".pick").on("click", function() {
+				if($(this).attr("statu") != 1) {
+					
+					indextoR = $(this).index();
+					imgs.src = playImg[indextoR];
+					$("#picked").css("backgroundImage", "url(" + imgArrA[indextoR] + ")");
+					$(this).attr("src", imgArrR[indextoR]);
+					var indextoW = $("#pickpeople img[statu='1']").index();
+					$("#pickpeople img[statu='1']").attr("src", imgArrW[indextoW]);
+					$("#pickpeople img[statu='1']").attr("statu", "0");
+					$(this).attr("statu", "1");
+					$("#pickname span").eq(indextoR).css("color", "red");
+					$("#pickname span[statu='1']").css("color", "black");
+					$("#pickname span[statu='1']").attr("statu", "0");
+					$("#pickname span").eq(indextoR).attr("statu", "1");
+				}
+			})
+			$("#fix").on("touchstart", function() {
+				$("#fix").css("backgroundImage", "url(img/pickDown.png)");
+			});
+			$("#fix").on("touchend", function() {
+				$("#fix").css("backgroundImage", "url(img/pickUp.png)");
+				//跳到下一界面
+//				move();
+//				page3();
+			});
+			$("#fix").on("touchcancel", function() {
+				$("#fix").css("backgroundImage", "url(img/pickUp.png)");
+			});
+			//界面三
+//			function page3() {
+				canvas.width = windowWidth;
+				canvas.height = windowHeight;
+				//因为设计稿的大小和各种设备大小不等，所以要找到每个元素和设计稿大小的比例
+				var scaleX = canvas.width/640;
+				var scaleY = canvas.height/1136;
+				//玩家
+				function Player() {
+					this.img = imgs;
+					this.x = canvas.width*0.3656;
+					this.y = canvas.height*0.0246;
+					this.w = this.img.width*scaleX;
+					this.h = this.img.height*scaleY;
+				}
+				Player.prototype.draw = function() {
+					context.drawImage(this.img, this.x, this.y, this.w, this.h);
+				}
+				
+				
+				function Trs(img,obj){
+					this.img=img;
+					this.w=this.img.width*scaleX;
+					this.h=this.img.height*scaleY;
+					this.x=obj.x+(obj.w-this.w)/2;
+					this.y=obj.y+(obj.h-this.h)/2;
+					this.speed=obj.speed;
+				}
+				
+				Trs.prototype.draw=function(){
+					context.drawImage(this.img,this.x,this.y,this.w,this.h);
+				}
+				Trs.prototype.move=function(speed){
+					this.speed=speed;
+					this.x+=this.speed;
+					
+				}
+				
+				//云
+				function  CloudBg(obj){
+					this.img=obj.img;
+					this.x=obj.x;
+					this.y=obj.y;
+					this.w=this.img.width*scaleX;
+					this.h=this.img.height*scaleY;
+					//运动速度
+					this.speed=obj.speed;
+					//云上宝物
+					this.trs=new Trs(obj.trs,this);
+					
+					//判断宝物被抓走吗
+					this.grab=false;
+				}
+				CloudBg.prototype.draw=function(){
+					context.drawImage(this.img,this.x,this.y,this.img.width*scaleX,this.img.height*scaleY);
+					if(!this.grab){
+						this.trs.draw();
+					}
+					
+				}
+				CloudBg.prototype.move=function(){
+					if(this.x<0||this.x>canvas.width-this.img.width*scaleX){
+						this.speed*=-1;
+					}
+					this.x+=this.speed;
+					this.trs.move(this.speed);
+				}
+				
+				//马桶塞
+				function Saizi(){
+					this.x=0;
+					this.y=0;
+					this.w=imgObj.plug.width*scaleX;
+					this.h=imgObj.plug.height*scaleY;
+					
+					this.len=canvas.height*0.1496;
+					this.rotatedeg=45;
+					this.rotatespeed=1;
+					this.lenspeed=0;
+					this.dir="right";
+					//判断碰到宝物了吗
+					this.peng=0;
+					
+				}
+				Saizi.prototype.draw=function(){
+					context.save();
+					context.translate(canvas.width*0.3828,canvas.height*0.2245);
+					context.rotate(this.rotatedeg*deg);
+					context.drawImage(imgObj.pole,0,0,imgObj.pole.width*scaleX,this.len);
+					context.drawImage(imgObj.plug,0-(imgObj.plug.width*scaleX-imgObj.pole.width*scaleX)/2,this.len,imgObj.plug.width*scaleX,imgObj.plug.height*scaleY);
+					context.restore();
+				}
+				Saizi.prototype.move=function(){
+					if(this.rotatedeg>45){
+						this.rotatespeed=-1;
+					}else if(this.rotatedeg<-45){
+						this.rotatespeed=1;
+					}
+					if(this.len<canvas.height*0.15){
+						this.len=canvas.height*0.15;
+						this.lenspeed=0;
+						if(this.dir=="left"){
+							this.rotatespeed=1;
+						}else{
+							this.rotatespeed=-1;
+						}
+					}
+					
+					var x=canvas.width*0.3828-this.len*Math.sin(this.rotatedeg*deg);
+					var y=canvas.height*0.2245+this.len*Math.cos(this.rotatedeg*deg);
+					//(x,y)在原画布上杆底部的位置
+					this.x=x-this.w/2*Math.cos(this.rotatedeg*deg);
+					this.y=y-this.w/2*Math.sin(this.rotatedeg*deg);
+					
+					if(this.peng==1||this.x<0||this.x>canvas.width){
+						this.lenspeed=-5;
+					}
+					
+					this.rotatedeg+=this.rotatespeed;
+					this.len+=this.lenspeed;
+				}
+				//随机获取宝物
+				var trsArr=[imgObj.trr1,imgObj.trr2,imgObj.trr3,imgObj.trr4,imgObj.trr5,imgObj.trr6,imgObj.trr7];
+
+				var player = new Player();
+				var cloud1=new CloudBg({
+					x:canvas.width*0.2813,
+					y:canvas.height*0.4801,
+					img:imgObj.cloud1,
+					speed:3,
+					trs:trsArr[rand(0,6)]
+				});
+				var cloud2=new CloudBg({
+					x:canvas.width*0.413,
+					y:canvas.height*0.5,
+					img:imgObj.cloud2,
+					speed:4,
+					trs:trsArr[rand(0,6)]
+				});
+				var cloud3=new CloudBg({
+					x:canvas.width*0.5,
+					y:canvas.height*0.5783,
+					img:imgObj.cloud3,
+					speed:3,
+					trs:trsArr[rand(0,6)]
+				});
+				var cloud4=new CloudBg({
+					x:canvas.width*0.53,
+					y:canvas.height*0.6575,
+					img:imgObj.cloud4,
+					speed:2,
+					trs:trsArr[rand(0,6)]
+				});
+				var cloud5=new CloudBg({
+					x:canvas.width*0.63,
+					y:canvas.height*0.7367,
+					img:imgObj.cloud5,
+					speed:3,
+					trs:trsArr[rand(0,6)]
+				});
+				var cloud6=new CloudBg({
+					x:canvas.width*0.33,
+					y:canvas.height*0.8160,
+					img:imgObj.cloud6,
+					speed:1,
+					trs:trsArr[rand(0,6)]
+				});
+				var cloud7=new CloudBg({
+					x:canvas.width*0.2813,
+					y:canvas.height*0.8961,
+					img:imgObj.cloud7,
+					speed:5,
+					trs:trsArr[rand(0,6)]
+				});
+				var cloudArr=[cloud1,cloud2,cloud3,cloud4,cloud5,cloud6,cloud7];
+				var saizi=new Saizi();
+				function ani() {
+					
+					context.clearRect(0, 0, canvas.width, canvas.height);
+					//碰撞检测
+					for(var i=0;i<cloudArr.length;i++ ){
+						if(peng(saizi,cloudArr[i].trs)){
+							console.log(1);
+							cloudArr[i].grab=true;
+							saizi.peng=1;
+							
+						}else{
+							console.log("没碰");
+						}
+					}
+					context.drawImage(imgObj.playbg, 0, 0,canvas.width,canvas.height);
+					player.draw();
+					
+					
+					for(var i=0;i<cloudArr.length;i++){
+						cloudArr[i].draw();
+						cloudArr[i].move();
+					}
+					
+					saizi.draw();
+					saizi.move();
+					window.requestAnimationFrame(ani);
+				}
+				ani();
+				$("#btn").on("touchstart",function(e){
+					var ev=e||event;
+					if(saizi.rotatespeed>0){
+						saizi.dir="left";
+					}else{
+						saizi.dir="right";
+					}
+					saizi.lenspeed=5;
+					saizi.rotatespeed=0;
+					ev.preventDefault();
+				});
+				$("#btn").on("touchend",function(){
+					saizi.lenspeed=-5;
+				});
+//			}
+
+			//页面跳转
+			var timer = null;
+			var pageindex = 0;
+
+			function move() {
+				pageindex++;
+				var b = $("#wrap").offset().left;
+				var end = -windowWidth * pageindex; //结束位置
+				var c = end - b;
+				var t = 0;
+				var d = 30;
+				clearInterval(timer);
+				timer = setInterval(function() {
+					t++;
+					if(t >= d) {
+						clearInterval(timer);
+					}
+					//Tween后第一个位置规定运动轨迹，第二个位置规定运动曲线
+					$("#wrap")[0].style.left = Tween.Back.easeOut(t, b, c, d) + 'px';
+				}, 16);
+			}
+			if(pageindex > $("#wrap>div").length - 1) {
+				pageindex = 0;
+			}
+			
+				
+		}
+		
+		
+		//碰撞检测
+		function peng(r1, b1) {
+			var r1l = r1.x + r1.w;
+			var r1h = r1.y + r1.h;
+			var b1l = b1.x + b1.w;
+			var b1h = b1.y + b1.h;
+			if(r1.x < b1l && b1.x < r1l && b1.y < r1h && r1.y < b1h) {
+				return true;
+			}
+			return false;
+		}
+		
+		
+		
+		//随机函数
+		function rand(min,max){
+			return parseInt(Math.random()*(max-min+1)+min);
+		}
+		
+		
+		function load(loads) {
+			console.log(loads);
+		}
+	</script>
+
+</html>

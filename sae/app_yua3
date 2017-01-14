@@ -1,0 +1,80 @@
+-- MySQL dump 10.13  Distrib 5.1.73, for redhat-linux-gnu (x86_64)
+--
+-- Host: 10.67.15.132    Database: app_yua3
+-- ------------------------------------------------------
+-- Server version	5.6.23-72.1-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `access_token`
+--
+
+DROP TABLE IF EXISTS `access_token`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `access_token` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `access_token` varchar(255) NOT NULL,
+  `expires_in` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `access_token`
+--
+
+LOCK TABLES `access_token` WRITE;
+/*!40000 ALTER TABLE `access_token` DISABLE KEYS */;
+INSERT INTO `access_token` VALUES (1,'-61kUKHbWG7r39mI4nLGnbSIGjfgzR3Lahg_JrwKE9ykUG9qLBYsbpNVll8WiDdfOq--JUp8tC3bk1VzOlsieQUER8GZWPomnN9BWo6ZN-0','1483538406');
+/*!40000 ALTER TABLE `access_token` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rank`
+--
+
+DROP TABLE IF EXISTS `rank`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rank` (
+  `rank_id` int(255) NOT NULL AUTO_INCREMENT,
+  `nickname` varchar(255) NOT NULL,
+  `openid` varchar(255) NOT NULL,
+  `score` int(255) NOT NULL,
+  `img` varchar(255) NOT NULL,
+  `user` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`rank_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rank`
+--
+
+LOCK TABLES `rank` WRITE;
+/*!40000 ALTER TABLE `rank` DISABLE KEYS */;
+INSERT INTO `rank` VALUES (42,'9:20','onWNQxGjbOveeS2W-f_nLCDzGeiM',100,'http://wx.qlogo.cn/mmopen/ppQiaiawgCGo5iaH8BgPRJoO0iayvabPibscaia4Nicibfm3GIOpjI9Go3ILnJRtOKZlkgDuZ6n8oPAYgur2Rib2VcHKHHE89kI6wT3fU/0',NULL),(44,'陈馨','onWNQxJjNoCLtbVHyp7EAqD7yDnE',47,'http://wx.qlogo.cn/mmopen/X4BptSDsic68icJPlCVCOX6QJNo4ttkibYPNTcgkGLUtMqDkS5HXX8LkeZ44QHTK7nyRcGLWQicT9VfQqBdqHx2qibCXpEV3PGoVv/0',NULL),(45,'','',33,'',NULL),(46,'木子李','onWNQxEv88wfFk2_fJ6NT30RooSk',96,'http://wx.qlogo.cn/mmopen/X4BptSDsic6ib8vJADNbDeLJbME9QIcfCIXicGMuKtSTCSw1vEqpIlLlUwSyKt4cNqEjLzu2jPuJQbdq2iaFUGsfxnNDx5YYvA4C/0',NULL),(47,'那么','onWNQxGV7R3rr1gi3GodnkUX0HwE',46,'http://wx.qlogo.cn/mmopen/Iv0iblM1u1ic38kzPK3Su0ibHY7jicEkyS86PRFmEd8CQQ4lia9mI5ibkS3QVXxHFDCFwrOnF9XBrJPGBH8Faibibr70et47mYPNCD2U/0',NULL);
+/*!40000 ALTER TABLE `rank` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2017-01-12  9:03:38
